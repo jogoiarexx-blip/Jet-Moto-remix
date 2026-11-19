@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#182d2d" />
+    <title>Jet Rush · Copa Maré Viva</title>
+    <link rel="stylesheet" href="./css/jogo.css" />
+    <script defer src="./js/circuitos.js"></script>
+    <script defer src="./vendor/three.min.js"></script>
+    <script defer src="./js/motos.js"></script>
+    <script defer src="./js/cenarios.js"></script>
+    <script defer src="./js/corrida.js"></script>
+    <script defer src="./js/copa.js"></script>
+    <script defer src="./js/interface.js"></script>
+  </head>
+  <body>
+    <div id="menu">
+      <header class="bar">
+        <span class="logo"><i class="mark"></i>JET RUSH</span
+        ><span class="sub">Liga do Vórtice</span><span class="spacer"></span
+        ><button id="lore">História</button
+        ><button id="manual">Comandos</button>
+      </header>
+      <main class="wrap">
+        <div class="layout">
+          <section id="stageArt" class="stage">
+            <div id="showview"></div>
+            <div class="stagehead">
+              <span class="tag" id="stageNo"
+                >Copa Maré Viva &nbsp; / &nbsp; Circuito 01</span
+              >
+              <h1 id="trackName">Praia dos Ventos</h1>
+            </div>
+            <div class="stagefoot">
+              <div>
+                <span class="small">Garagem da liga</span
+                ><strong id="combo"></strong>
+              </div>
+              <div>
+                <button id="rev" title="Testar propulsores">Turbo</button>
+                <button id="zoom">Zoom</button>
+                <button id="garage">Garagem ↗</button>
+              </div>
+            </div>
+          </section>
+          <section class="panel">
+            <span class="tag">Pré-corrida</span>
+            <h2>Grid de largada</h2>
+            <div class="field">
+              <label for="mode">Modalidade</label
+              ><select id="mode">
+                <option value="gp">Copa Maré Viva · campeonato</option>
+                <option value="quick">Corrida rápida</option>
+                <option value="tt">Contra o relógio</option>
+                <option value="training">Treino guiado</option>
+              </select>
+              <div id="description" class="summary"></div>
+            </div>
+            <div class="field">
+              <label for="circuit">Circuito</label
+              ><select id="circuit">
+                <option>Praia dos Ventos</option>
+                <option>Corredor do Coral</option>
+                <option>Mangue das Engrenagens</option>
+              </select>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="cc">Classe</label
+                ><select id="cc">
+                  <option>100 cc</option>
+                  <option selected>150 cc</option>
+                  <option>200 cc</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="diff">Adversários</label
+                ><select id="diff">
+                  <option>Fácil</option>
+                  <option selected>Normal</option>
+                  <option>Difícil</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="light">Iluminação</label
+                ><select id="light">
+                  <option value="day">Sol tropical</option>
+                  <option value="sunset">Pôr do sol</option>
+                  <option value="night">Noite neon</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="quality">Gráficos</label
+                ><select id="quality">
+                  <option>Leve</option>
+                  <option selected>Equilibrado</option>
+                  <option>Alto</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="assist">Assistência de direção</label
+              ><select id="assist">
+                <option>Alta</option>
+                <option selected>Equilibrada</option>
+                <option>Baixa</option>
+              </select>
+            </div>
+            <div class="record">
+              <span class="small">Melhor volta · modo / classe</span
+              ><strong class="times" id="record"></strong>
+            </div>
+            <div class="summary" hidden id="previousRecord"></div>
+            <button id="newCup" hidden>Recomeçar a copa</button
+            ><button id="start" class="primary">
+              Largar na praia &nbsp; →
+            </button>
+          </section>
+        </div>
+        <aside class="strip">
+          <canvas
+            class="route"
+            id="mapPreview"
+            width="190"
+            height="104"
+          ></canvas>
+          <div>
+            <h3>O circuito</h3>
+            <p id="trackBrief">
+              Na lagoa, siga as boias, corte por dentro em drift ou entre no
+              píer à direita. Compare sua parcial na saída.
+            </p>
+          </div>
+          <span id="length" class="small"></span>
+        </aside>
+      </main>
+    </div>
+    <div id="race" class="race" hidden>
+      <div id="raceview"></div>
+      <div class="hud">
+        <div class="top">
+          <div>
+            <div class="tile">
+              <span class="small">Posição</span>
+              <strong id="rank"></strong> &nbsp;
+              <span class="small">Volta</span> <strong id="lap"></strong>
+            </div>
+            <canvas id="map" width="240" height="150" class="minimap"></canvas>
+          </div>
+          <div class="tile times">
+            <span class="small">Tempo</span> <b id="elapsed"></b>
+          </div>
+          <div class="controls">
+            <button id="pause" aria-label="Pausar">Ⅱ</button
+            ><button id="cam" aria-label="Trocar câmera">Visão</button
+            ><button id="audio">Som</button
+            ><button id="touchToggle">Toque</button>
+          </div>
+        </div>
+        <div class="center"><b id="count"></b><b id="message"></b></div>
+        <div class="bottom">
+          <div class="tile">
+            <span id="sector" class="small"></span>
+            <div id="split" class="small times" hidden></div>
+            <div class="meter">
+              <span id="speed">0</span><small class="speed-unit"> km/h</small>
+            </div>
+          </div>
+          <div class="item-status">
+            <button id="use">Q · Item vazio</button>
+            <div id="ability" class="tile small"></div>
+          </div>
+        </div>
+        <div id="touch" class="touch" hidden>
+          <div>
+            <button data-key="ArrowLeft">◀</button
+            ><button data-key="ArrowRight">▶</button
+            ><button data-key="Space">Drift</button>
+          </div>
+          <div>
+            <button data-key="KeyE">Gancho</button
+            ><button data-key="KeyF">Giro</button
+            ><button data-key="ArrowDown">Freio</button
+            ><button data-key="ArrowUp">Gás</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal" id="modal" hidden>
+      <section
+        class="card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mt"
+      >
+        <span class="tag">Jet Rush / Liga do Vórtice</span>
+        <h2 id="mt"></h2>
+        <div id="mb"></div>
+        <div class="actions" id="ma"></div>
+      </section>
+    </div>
+    <div id="fallback" hidden></div>
+  </body>
+</html>
